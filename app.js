@@ -3,15 +3,17 @@ const getPokemonUrl = (id) => `https://pokeapi.co/api/v2/pokemon/${id}`
 const generatePokemonPromisses = () => Array(150).fill().map((_, index) =>
     fetch(getPokemonUrl(index + 1)).then(response => response.json()))
 
+
+   
 const fetchPokemon = () => {
 
     const pokemonPromises = generatePokemonPromisses()
-    
+
     Promise.all(pokemonPromises)
         .then(pokemons => {
             //console.log(pokemons)
 
-            const listPokemons = pokemons.reduce((accumulator, pokemon) => {
+            return pokemons.reduce((accumulator, pokemon) => {
                 const types = pokemon.types.map(typeInfo => typeInfo.type.name)
 
                 accumulator += `<li class="card ${types[0]}">
@@ -22,10 +24,12 @@ const fetchPokemon = () => {
 
                 return accumulator
             }, "")
-            const ul = document.querySelector('[data-js="pokedex"]')
-            ul.innerHTML = listPokemons
+            
         })
-
+       .then(pokemons => {
+        const ul = document.querySelector('[data-js="pokedex"]')
+        ul.innerHTML = pokemons
+       })
 }
 
 fetchPokemon()
